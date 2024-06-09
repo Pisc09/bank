@@ -36,7 +36,7 @@ function Login() {
         localStorage.setItem("token", data.body.token); // Stock le token
         console.log(data.body.token);
 
-        // Ici, vous pouvez faire un autre appel API
+        // Ici, nouvel appel API
         const anotherResponse = await axios.post(
           "http://localhost:3001/api/v1/user/profile",
           {}
