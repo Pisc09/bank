@@ -8,7 +8,7 @@ import "../../../../designs/css/main.css";
 function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate(); // Utiliser useNavigate
+  const navigate = useNavigate();
 
   function handleEmailChange(e) {
     setEmail(e.target.value);
@@ -37,12 +37,16 @@ function Login() {
         console.log(data.body.token);
 
         // Ici, nouvel appel API
-        const anotherResponse = await axios.post(
-          "http://localhost:3001/api/v1/user/profile",
-          {}
-        );
-        const userProfile = anotherResponse.data;
-        console.log(userProfile);
+        const axiosUserProfile = async () => {
+          const anotherResponse = await axios.post(
+            "http://localhost:3001/api/v1/user/profile",
+            {}
+          );
+          const userProfile = anotherResponse.data;
+          console.log(userProfile);
+        };
+
+        axiosUserProfile();
 
         navigate("/user"); // Redirige vers le composant User.jsx
         console.log(data);
