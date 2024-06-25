@@ -1,41 +1,14 @@
-import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
-import axios from "axios";
 import "../../../../designs/css/main.css";
 import logo from "../../../../designs/img/argentBankLogo.png";
-// useSelector ici
 
 function Header() {
-  const [userName, setUserName] = useState("");
-  const navigate = useNavigate();
+  const { userName } = useSelector((state) => state);
 
-  useEffect(() => {
-    async function userNameProfile() {
-      try {
-        const token = localStorage.getItem("token");
-        console.log(token);
-        const response = await axios.post(
-          "http://localhost:3001/api/v1/user/profile",
-          {},
-          {
-            headers: {
-              Accept: "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        console.log(response);
-        setUserName(response.data.body.userName);
-      } catch (error) {
-        console.error(
-          `Erreur lors de la récupération du profil de l'utilisateur: ${error.response.data}`
-        );
-      }
-    }
-    userNameProfile();
-  }, []);
+  const navigate = useNavigate();
 
   function handleLogout() {
     localStorage.removeItem("token");

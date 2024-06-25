@@ -1,55 +1,29 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import Account from "../Account/Account";
 import "../../../../designs/css/main.css";
 
 function User() {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [userName, setUserName] = useState("");
-  const [isEditing, setIsEditing] = useState(false);
-  // useDispatch (userName)
-
-  useEffect(() => {
-    async function userProfile() {
-      try {
-        const token = localStorage.getItem("token");
-        // console.log(token);
-        const response = await axios.post(
-          "http://localhost:3001/api/v1/user/profile",
-          {},
-          {
-            headers: {
-              Accept: "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        console.log(response);
-        setFirstName(response.data.body.firstName);
-        setLastName(response.data.body.lastName);
-        setUserName(response.data.body.userName);
-      } catch (error) {
-        console.error(
-          `Erreur lors de la récupération du profil de l'utilisateur: ${error.response.data}`
-        );
-      }
-    }
-    userProfile();
-  }, []);
+  const dispatch = useDispatch();
+  const { firstName, lastName, userName, isEditing } = useSelector(
+    (state) => state
+  );
+  const [newUserName, setNewUserName] = useState(userName);
 
   function handleEditClick() {
-    setIsEditing(true);
+    dispatch({ type: "SAVE_USER" });
+    dispatch({ type: "SET_EDITING", payload: true });
   }
 
   async function handleSaveClick() {
-    setIsEditing(false);
+    dispatch({ type: "SET_EDITING", payload: false });
     try {
       const token = localStorage.getItem("token");
-      await axios.put(
+      const response = await axios.put(
         "http://localhost:3001/api/v1/user/profile",
         {
-          userName,
+          userName: newUserName,
         },
         {
           headers: {
@@ -58,6 +32,9 @@ function User() {
           },
         }
       );
+      if (response.status === 200) {
+        dispatch({ type: "SET_user", payload: newUserName });
+      }
     } catch (error) {
       console.error(
         `Erreur lors de la mise à jour du profil de l'utilisateur: ${error.response.data}`
@@ -66,11 +43,13 @@ function User() {
   }
 
   function handleCancelClick() {
-    setIsEditing(false);
+    dispatch({ type: "SET_EDITING", payload: false });
+    dispatch({ type: "RESET_USER" });
   }
 
   function handleUserNameChange(e) {
-    setUserName(e.target.value);
+    const value = e.target.value;
+    setNewUserName(value);
   }
 
   return (
@@ -88,8 +67,8 @@ function User() {
             <input
               type="text"
               placeholder="User name"
-              value={userName}
-              onChange={handleUserNameChange}
+              value={newUserName}
+              onChange={(e) => handleUserNameChange(e)}
             />
             <input type="text" name="First name" value={firstName} disabled />
             <input type="text" name="Last name" value={lastName} disabled />

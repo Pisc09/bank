@@ -6,26 +6,8 @@ import Features from "../components/Features/Features.jsx";
 import Login from "../components/Login/Login.jsx";
 import User from "../components/User/User.jsx";
 import Footer from "../components/Footer/Footer.jsx";
-// import stateReducer from "../reducers/stateReducer.jsx";
-function Page() {
-  // const [state, dispatch] = useReducer(stateReducer, {});
 
-  // function handleUsernameChange(e) {
-  //   dispatch({
-  //     type: "ADD_USERNAME",
-  //     name: e.target.value,
-  //   });
-  // }
-
-  // function handlePasswordChange(e) {
-  //   dispatch({
-  //     type: "ADD_PASSWORD",
-  //     password: e.target.value,
-  //   });
-  // }
-
-  // async function handleClick(e) {}
-
+function App() {
   return (
     <Router>
       <Header />
@@ -47,4 +29,4 @@ function Page() {
     </Router>
   );
 }
-export default Page;
+export default App;

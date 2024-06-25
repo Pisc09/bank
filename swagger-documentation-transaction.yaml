@@ -1,0 +1,97 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "Argent Bank API"
+  description: "API for Argent Bank transactions"
+host: "localhost:3001"
+basePath: "/api/v1"
+schemes:
+  - "http"
+paths:
+  /accounts/{accountId}/transactions:
+    get:
+      summary: "Get all transactions for a specific account"
+      parameters:
+        - in: "path"
+          name: "accountId"
+          type: "integer"
+          description: "The ID of the account"
+      responses:
+        "200":
+          description: "An array of transactions"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Transaction"
+        "400":
+          description: "Invalid Fields"
+        "500":
+          description: "Internal Server Error"
+  /accounts/{accountId}/transactions/{transactionId}:
+    get:
+      summary: "Get a specific transaction for a specific account"
+      parameters:
+        - in: "path"
+          name: "accountId"
+          type: "integer"
+          description: "The ID of the account"
+        - in: "path"
+          name: "transactionId"
+          type: "integer"
+          description: "The ID of the transaction"
+      responses:
+        "200":
+          description: "A transaction"
+          schema:
+            $ref: "#/definitions/Transaction"
+        "400":
+          description: "Invalid Fields"
+        "500":
+          description: "Internal Server Error"
+    put:
+      summary: "Update a specific transaction for a specific account"
+      parameters:
+        - in: "path"
+          name: "accountId"
+          type: "integer"
+          description: "The ID of the account"
+        - in: "path"
+          name: "transactionId"
+          type: "integer"
+          description: "The ID of the transaction"
+        - in: "body"
+          name: "transaction"
+          description: "The transaction to update"
+          schema:
+            $ref: "#/definitions/TransactionUpdate"
+      responses:
+        "200":
+          description: "Transaction updated"
+        "400":
+          description: "Invalid Fields"
+        "500":
+          description: "Internal Server Error"
+definitions:
+  Transaction:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+      description:
+        type: "string"
+      amount:
+        type: "number"
+      date:
+        type: "string"
+        format: "date-time"
+      category:
+        type: "string"
+      note:
+        type: "string"
+  TransactionUpdate:
+    type: "object"
+    properties:
+      category:
+        type: "string"
+      note:
+        type: "string"

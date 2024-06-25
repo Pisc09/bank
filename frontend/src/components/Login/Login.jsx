@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
@@ -9,6 +10,7 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   function handleEmailChange(e) {
     setEmail(e.target.value);
@@ -29,27 +31,26 @@ function Login() {
           password,
         }
       );
-      console.log(`Connexion réussie : ${response.data}`);
-      console.log(response);
       if (response.status === 200) {
         const data = response.data;
         localStorage.setItem("token", data.body.token); // Stock le token
-        console.log(data.body.token);
 
-        // Ici, nouvel appel API
         const axiosUserProfile = async () => {
           const anotherResponse = await axios.post(
             "http://localhost:3001/api/v1/user/profile",
-            {}
+            {},
+            {
+              headers: {
+                Authorization: `Bearer ${data.body.token}`, // Ajoute du token (obligatoire)
+              },
+            }
           );
           const userProfile = anotherResponse.data;
-          console.log(userProfile);
+          dispatch({ type: "SET_USER", payload: userProfile.body });
         };
-
         axiosUserProfile();
 
         navigate("/user"); // Redirige vers le composant User.jsx
-        console.log(data);
       } else {
         console.error("Erreur de connexion");
       }
@@ -86,12 +87,9 @@ function Login() {
             <input type="checkbox" id="remember-me" />
             <label htmlFor="remember-me">Remember me</label>
           </div>
-          {/* PLACEHOLDER DUE TO STATIC SITE  */}
           <Link to="/user" onClick={handleLogin} className="sign-in-button">
             Sign In
           </Link>
-          {/* SHOULD BE THE BUTTON BELOW */}
-          {/* <button className="sign-in-button">Sign In</button> */}
         </form>
       </section>
     </main>
